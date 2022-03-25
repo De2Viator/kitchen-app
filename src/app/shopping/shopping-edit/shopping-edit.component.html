@@ -1,0 +1,20 @@
+<form (ngSubmit)="addIngridient()" #form="ngForm">
+  <fieldset class="container d-flex justify-content-between col-md-8 mt-3">
+    <label>
+      <span>Name</span>
+      <input type="text" name="name" ngModel required/>
+    </label>
+    <label>
+      <span>Amount</span>
+      <input type="number" name="amount" pattern="^\d+$" ngModel required/>
+    </label>
+  </fieldset>
+  <div class="container d-flex justify-content-between mt-5 col-md-8">
+    <button type="submit" class="btn btn-success" [disabled]="!form.valid">
+      Add Ingridient
+    </button>
+    <button type="button" *ngIf='editMode' [disabled]="!form.valid" class="btn btn-primary" (click)="changeIngridient()">Change Ingridient</button>
+    <button type="button" *ngIf='editMode' class="btn btn-danger" (click)="deleteIngridient()">Delete Ingridient</button>
+    <button type='button' class="btn btn-dark" (click)="clearForm()">Clear Form</button>
+  </div>
+</form>
