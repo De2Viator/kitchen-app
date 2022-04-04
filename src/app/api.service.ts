@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { exhaustMap, map, Observable, take } from 'rxjs';
+import { AuthService } from './auth/auth.service';
 import { IIngridient } from './shared/ingridient';
 import { IRecipe } from './shared/recipe';
 
@@ -10,17 +11,22 @@ import { IRecipe } from './shared/recipe';
 export class ApiService {
   API='https://kitchen-app-1f837-default-rtdb.firebaseio.com';
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private auth:AuthService) { }
 
   getRecipes(){
-    return this.http.get<{ [key:string]:IRecipe }>(`${this.API}/recipes.json`).pipe(map(data => {
+    return this.auth.user.pipe(
+    take(1),
+    exhaustMap(user => {
+      return this.http.get<{ [key:string]:IRecipe }>(`${this.API}/recipes.json?auth=${user?.token}`)
+    }),
+    map(data => {
       let dataArr = [];
       for(const key in data) {
         if(data[key]){
           dataArr.push({...data[key], id:key})
         }
       }
-      return dataArr;
+      return dataArr
     }));
   }
 
@@ -40,7 +46,6 @@ export class ApiService {
 
   addIngridient(ingridient:IIngridient) {
     const body = ingridient;
-    console.log(body)
     return this.http.post<{ [key:string]:string }>(`${this.API}/ingridients.json`,body)
   }
 

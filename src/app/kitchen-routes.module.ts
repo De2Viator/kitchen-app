@@ -7,16 +7,19 @@ import { RecipeListComponent } from './recipe/recipe-list/recipe-list.component'
 import { ShoppingListComponent } from './shopping/shopping-list/shopping-list.component';
 import { RecipeDetailsComponent } from './recipe/recipe-details/recipe-details.component';
 import { RecipeEditComponent } from './recipe/recipe-edit/recipe-edit.component';
+import { RecipeResolver } from './recipe.resolver';
+import { AuthComponent } from './auth/auth.component';
 
 
 const appRoutes:Routes = [
 {path:'', redirectTo:'recipes-list', pathMatch:'full'},
 {path:'recipes-list', component:RecipeListComponent, children:[
-  {path:':id/:name', component:RecipeDetailsComponent},
-  {path:':id/:name/edit', component:RecipeEditComponent},
+  {path:':id/:name', component:RecipeDetailsComponent, resolve:{recipe:RecipeResolver}},
+  {path:':id/:name/edit', component:RecipeEditComponent,  resolve:{recipe:RecipeResolver}},
   {path:'new', component:RecipeEditComponent},
 ]},
 {path:'shopping-list', component:ShoppingListComponent},
+{path:'auth', component:AuthComponent}
 ]
 @NgModule({
   imports: [

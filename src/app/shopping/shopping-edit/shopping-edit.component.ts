@@ -35,6 +35,7 @@ export class ShoppingEditComponent implements OnInit{
 
   deleteIngridient(): void {
     this.shoppingService.deleteIngridient(this.id);
+    this.editMode = false;
     this.form.reset();
   }
 

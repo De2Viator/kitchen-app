@@ -9,6 +9,7 @@ import { HeaderModule } from './header/header.module';
 import { ShoppingService } from './shopping/shopping.service';
 import { KitchenRoutesModule } from './kitchen-routes.module';
 import { RouterModule } from '@angular/router';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { RouterModule } from '@angular/router';
     HeaderModule,
     KitchenRoutesModule,
     RouterModule,
+    AuthModule
   ],
   providers: [ShoppingService],
   bootstrap: [AppComponent]
