@@ -12,11 +12,11 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   constructor( private recipeService:RecipeService ) {}
   recipes:IRecipe[] = [];
   newRecipe:Subscription = this.recipeService.addedRecipe.subscribe((data:any) => {
-    this.recipes = data;
+    this.recipes = this.recipeService.getRecipes()
   })
 
   ngOnInit() :void {
-    this.recipes = this.recipeService.recipes;
+    this.recipes = this.recipeService.getRecipes();
   }
 
   ngOnDestroy(): void {

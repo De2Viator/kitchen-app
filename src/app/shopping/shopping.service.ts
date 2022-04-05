@@ -1,6 +1,6 @@
 
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Subject, tap } from "rxjs";
 import { ApiService } from "../api.service";
 import { IIngridient } from "../shared/ingridient";
 @Injectable()
@@ -8,17 +8,22 @@ export class ShoppingService {
   constructor(private api:ApiService){}
   editStart = new Subject<string>();
   editEnd = new Subject<string>();
-  ingridients:IIngridient[] = this.getIngridients();
+  ingridients:IIngridient[] = []
 
   getIngridients(): IIngridient[] {
     let ingridients:IIngridient[] = [];
-    this.api.getIngridients().subscribe(data => {
+    this.api.getIngridients()
+    .pipe(tap((data:any) => {
+      data.forEach((el:any) => this.ingridients.push(el))
+    }))
+    .subscribe(data => {
       ingridients.push(...data);
-    })
+    });
     return ingridients;
   }
 
   getIngridient(id:string) {
+    console.log(id)
     let ingridient = {} as IIngridient;
     this.ingridients.forEach(el => {
       if(el.id === id){

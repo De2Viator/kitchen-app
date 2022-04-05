@@ -49,8 +49,9 @@ export class ShoppingEditComponent implements OnInit{
     this.shoppingService.editStart.subscribe((id:string) => {
       this.id = id;
       this.editMode = true;
-      this.form.controls['name'].setValue(this.shoppingService.getIngridient(id).name);
-      this.form.controls['amount'].setValue(this.shoppingService.getIngridient(id).amount)
+      const ingridient:IIngridient = this.shoppingService.getIngridient(id);
+      this.form.controls['name'].setValue(ingridient.name);
+      this.form.controls['amount'].setValue(ingridient.amount)
     })
   }
 }

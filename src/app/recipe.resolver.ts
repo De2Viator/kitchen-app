@@ -16,7 +16,6 @@ export class RecipeResolver implements Resolve<IRecipe> {
     let id = route.params['id'];
     this.api.getRecipes().subscribe(data => {
       let recipe = data.find((recipe:IRecipe) => recipe.id === id);
-      console.log(recipe)
       return recipe
     })
   }
