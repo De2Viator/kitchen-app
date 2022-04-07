@@ -10,7 +10,7 @@ import { IRecipe } from './shared/recipe';
 })
 export class ApiService {
   API='https://kitchen-app-1f837-default-rtdb.firebaseio.com';
-  token:string|null = null;
+  token:string|null|undefined = null;
 
   constructor(private http:HttpClient, private auth:AuthService) { }
 
@@ -52,7 +52,11 @@ export class ApiService {
     if(this.token === null) {
       return this.auth.user.pipe(
         exhaustMap(user => {
-          this.token = user?.token;
+          if(user === null) {
+            this.token = null;
+          } else {
+            this.token = user?.token;
+          } 
           return this.http.get<{ [key:string]:T }>(url)
         }),
         map(data => {

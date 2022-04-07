@@ -13,10 +13,10 @@
           <a class="nav-link" *ngIf="isAuth" routerLinkActive="active" routerLink="/recipes-list">Recipes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/shopping-list">Shopping List</a>
+          <a class="nav-link" routerLinkActive="active" *ngIf="isAuth" routerLink="/shopping-list">Shopping List</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" *ngIf="isAuth">Logout</a>
+          <a class="nav-link" (click)="logOut()" *ngIf="isAuth">Logout</a>
         </li>
       </ul>
     </div>
