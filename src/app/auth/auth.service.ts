@@ -1,8 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, Subject, tap, throwError } from 'rxjs';
-import { ApiService } from '../api.service';
+import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
 import { IAuthRequest, IAuthResponse } from '../shared/auth';
 import { Errors } from '../shared/errors';
 import { User } from '../shared/user';
@@ -13,6 +12,8 @@ import { User } from '../shared/user';
 export class AuthService {
   constructor(private http:HttpClient, private router:Router){}
   user = new Subject<User|null>();
+  isAuth = false;
+  timer:any;
 
   KEY = 'AIzaSyDHXgi-XUi1AdZw_lKV6lYzO1Az5AQEMJw'
   signUpKey = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.KEY}`;
@@ -37,6 +38,9 @@ export class AuthService {
       const expirationDate = new Date((new Date().getTime() + +loadedUser.expiresIn) * 1000)
       const realUser = new User(loadedUser.email, loadedUser.localId, loadedUser.idToken, expirationDate);
       if(realUser.token) {
+        const timer = new Date(expirationDate).getTime() - new Date().getTime()
+        this.autoLogout(timer);
+        this.isAuth = true;
         this.user.next(realUser)
       }
     }
@@ -54,22 +58,38 @@ export class AuthService {
   }
 
   private handleAuth(userData:IAuthResponse) {
-    const expirationDate = new Date((new Date().getTime() + +userData.expiresIn) * 1000)
-    const user = new User(userData.email, userData.localId, userData.idToken, expirationDate)
-    console.log(user);
+    const expirationDate = new Date((new Date().getTime() + +userData.expiresIn) * 1000);
+    const user = new User(userData.email, userData.localId, userData.idToken, expirationDate);
     this.user.next(user);
-    localStorage.setItem('userData', JSON.stringify(user))
+    this.autoLogout(+userData.expiresIn);
+    localStorage.setItem('userData', JSON.stringify(user));
+    this.isAuth = true;
   }
 
   logOut() {
     this.user.next(null);
-    this.router.navigate(['/auth'])
+    this.router.navigate(['/auth']);
+    localStorage.removeItem('userData')
+    if(this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+    this.isAuth = false;
+  }
+
+  autoLogout(time:number) {
+    const timer = time * 1000;
+    this.timer = setTimeout(() => {
+      this.logOut()
+    }, timer)
+    this.isAuth = false;
   }
 
   private handlerError(error:HttpErrorResponse,state:string) {
-    let err = 'Unexpected error'
+    let err = 'Unexpected error';
+    const errMes = error.error.error.message
     if(state === 'sign') {
-      switch (error.error.error.message) {
+      switch (errMes) {
         case Errors.emailExist:
           err = 'Email was exist'
           break;
@@ -79,7 +99,7 @@ export class AuthService {
       }
     } 
     else if(state === 'login') {
-      switch (error.error.error.message) {
+      switch (errMes) {
         case Errors.invalidPassword:
           err = 'Invalid Password'
           break;

@@ -18,7 +18,6 @@ export class RecipeService {
         recipeSelect = recipe;
       }
     });
-    console.log(recipeSelect)
     return recipeSelect;
   }
 
