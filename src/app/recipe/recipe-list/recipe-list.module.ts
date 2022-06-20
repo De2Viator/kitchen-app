@@ -16,7 +16,7 @@ import { RecipeListComponent } from './recipe-list.component';
             RecipeDetailsModule, 
             RouterModule, 
             KitchenRoutesModule, 
-            RecipeEditModule,],
+            RecipeEditModule],
   providers:[RecipeService]
 })
 export class RecipeListModule {}

@@ -11,7 +11,7 @@ import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgbToastModule
+    NgbToastModule,
   ],
   exports:[RecipeEditComponent],
   providers:[NgbToastModule]
