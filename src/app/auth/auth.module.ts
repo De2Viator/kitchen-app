@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderModule } from '../shared/loader/loader.module';
 import { RouterModule } from '@angular/router';
+import { AlertModule } from '../shared/alert/alert.module';
 
 
 
@@ -15,7 +16,8 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     HttpClientModule,
     LoaderModule,
-    RouterModule
+    RouterModule,
+    AlertModule,
   ],
   exports:[AuthComponent]
 })

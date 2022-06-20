@@ -20,5 +20,7 @@
             Switch to {{!isLogin ? 'Login' : 'Sign Up'}}
         </button> 
     <loader *ngIf="isLoading"></loader>
-    <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+    <app-alert *ngIf="error" [message]="error"></app-alert>
+      <!-- <ng-container *ngComponentOutlet="alertComponent;content:errorSpecial">
+        </ng-container> -->  
 </div>
