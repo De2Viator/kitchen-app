@@ -1,14 +1,13 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'
-import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ShoppingListModule } from './shopping/shopping-list/shopping-list.module';
-import { HeaderModule } from './header/header.module';
-import { ShoppingService } from './shopping/shopping.service';
-import { KitchenRoutesModule } from './kitchen-routes.module';
 import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
+import { CoreModule } from './core.module';
+import { HeaderModule } from './header/header.module';
+import { KitchenRoutesModule } from './kitchen-routes.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { ShoppingModule } from './shopping/shopping.module';
 
@@ -17,6 +16,7 @@ import { ShoppingModule } from './shopping/shopping.module';
     AppComponent,
   ],
   imports: [
+    CoreModule,
     BrowserModule,
     HttpClientModule,
     NgbModule,
@@ -25,9 +25,7 @@ import { ShoppingModule } from './shopping/shopping.module';
     HeaderModule,
     KitchenRoutesModule,
     RouterModule,
-    AuthModule
-  ],
-  providers: [ShoppingService],
+    AuthModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

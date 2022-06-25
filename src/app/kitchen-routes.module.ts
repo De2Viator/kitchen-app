@@ -5,10 +5,7 @@ import { AuthComponent } from './auth/auth.component';
 import { RecipeRoutesModule } from './recipe/recipe-routing.module';
 
 
-const appRoutes:Routes = [
-{path:'', redirectTo:'recipes-list', pathMatch:'full'},
-{path:'auth', component:AuthComponent}
-]
+const appRoutes:Routes = [{path:'', redirectTo:'recipes-list', pathMatch:'full'}]
 @NgModule({
   imports: [
     CommonModule,
