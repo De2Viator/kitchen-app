@@ -1,7 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { KitchenRoutesModule } from 'src/app/kitchen-routes.module';
 import { RecipeDetailsModule } from '../recipe-details/recipe-details.module';
 import { RecipeEditModule } from '../recipe-edit/recipe-edit.module';
 import { RecipeItemModule } from '../recipe-item/recipe-item.module';
@@ -11,12 +10,11 @@ import { RecipeListComponent } from './recipe-list.component';
 @NgModule({
   declarations: [RecipeListComponent],
   exports:[RecipeListComponent],
-  imports: [BrowserModule, 
-            RecipeItemModule, 
+  imports: [RecipeItemModule, 
             RecipeDetailsModule, 
             RouterModule, 
-            KitchenRoutesModule, 
-            RecipeEditModule],
+            RecipeEditModule,
+            CommonModule],
   providers:[RecipeService]
 })
 export class RecipeListModule {}

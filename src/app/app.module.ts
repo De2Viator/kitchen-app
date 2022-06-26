@@ -1,15 +1,20 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core.module';
 import { HeaderModule } from './header/header.module';
-import { KitchenRoutesModule } from './kitchen-routes.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { ShoppingModule } from './shopping/shopping.module';
+
+const appRoutes:Routes = [
+  {path:'', redirectTo:'recipes-list', pathMatch:'full'},
+  {path:'recipes-list', loadChildren: () => import('./recipe/recipe.module').then(m => m.RecipeModule)},
+  {path:'shopping-list', loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule)},
+]
 
 @NgModule({
   declarations: [
@@ -17,15 +22,15 @@ import { ShoppingModule } from './shopping/shopping.module';
   ],
   imports: [
     CoreModule,
-    BrowserModule,
     HttpClientModule,
     NgbModule,
-    RecipeModule,
     ShoppingModule,
     HeaderModule,
-    KitchenRoutesModule,
+    RouterModule.forRoot(appRoutes),
     RouterModule,
-    AuthModule],
+    AuthModule,
+    BrowserModule,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

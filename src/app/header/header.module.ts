@@ -1,13 +1,13 @@
+import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
-import { NgbDropdownModule, NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbNavModule } from "@ng-bootstrap/ng-bootstrap";
 import { OpenDirectiveModule } from "../shared/open/open.module";
 import { HeaderComponent } from "./header.component";
 
 @NgModule({
     declarations:[HeaderComponent],
-    imports:[BrowserModule, OpenDirectiveModule, NgbNavModule, RouterModule],
+    imports:[OpenDirectiveModule, NgbNavModule, RouterModule, CommonModule],
     exports:[HeaderComponent],
 })
 

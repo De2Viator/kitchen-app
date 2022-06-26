@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+
 import { RecipeDetailsModule } from "./recipe-details/recipe-details.module";
 import { RecipeEditModule } from "./recipe-edit/recipe-edit.module";
 import { RecipeItemModule } from "./recipe-item/recipe-item.module";
@@ -14,7 +15,8 @@ import { RecipeRoutesModule } from "./recipe-routing.module";
     RecipeRoutesModule,
     RecipeEditModule,
     RecipeDetailsModule,
-    RecipeRoutesModule
+    RecipeRoutesModule,
+    CommonModule
   ],
   exports:[
     CommonModule,
@@ -23,7 +25,7 @@ import { RecipeRoutesModule } from "./recipe-routing.module";
     RecipeRoutesModule,
     RecipeEditModule,
     RecipeDetailsModule,
-    RecipeRoutesModule
+    RecipeRoutesModule, 
   ],
 })
 export class RecipeModule { }
