@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { IIngridient } from 'src/app/shared/ingridient';
+import { IIngridient } from 'src/app/shared/types/ingridient';
 import { ShoppingService } from '../shopping.service';
 
 @Component({

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Type } from '@angular/core';
 import { exhaustMap, map, Observable, take } from 'rxjs';
 import { AuthService } from './auth/auth.service';
-import { IIngridient } from './shared/ingridient';
-import { IRecipe } from './shared/recipe';
+import { IIngridient } from './shared/types/ingridient';
+import { IRecipe } from './shared/types/recipe';
 
 @Injectable({
   providedIn: 'root'

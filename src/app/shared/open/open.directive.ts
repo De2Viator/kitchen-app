@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostBinding, HostListener, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[appOpen]'
+  selector: '[appOpen]',
+  standalone:true,
 })
 export class OpenDirective {
   constructor(private elRef:ElementRef, private renderer:Renderer2) { }

@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot
 } from '@angular/router';
 import { ApiService } from './api.service';
-import { IRecipe } from './shared/recipe';
+import { IRecipe } from './shared/types/recipe';
 
 @Injectable({
   providedIn: 'root'

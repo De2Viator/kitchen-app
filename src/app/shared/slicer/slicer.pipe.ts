@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'slicer',
+  standalone:true,
 })
 export class SlicerPipe implements PipeTransform {
   transform(value: string, length: number): string {

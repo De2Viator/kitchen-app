@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from './auth.service';
-import { IAuthRequest, IAuthResponse } from '../shared/auth';
+import { IAuthRequest, IAuthResponse } from '../shared/types/auth';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AlertComponent } from '../shared/alert/alert.component';
@@ -19,7 +19,6 @@ export class AuthComponent {
   isLoading = false;
   error:string|null = null;
   alertComponent = AlertComponent;
-  //errorSpecial:Text[][] = [[document.createTextNode(``)]];
 
   switchMode() {
     this.isLogin = !this.isLogin;
@@ -48,7 +47,6 @@ export class AuthComponent {
       this.router.navigate(['/recipes-list']);
     }, (error) => {
       this.error = error;
-      //this.errorSpecial = [[document.createTextNode(`${this.error}`)]]
       this.isLoading = false;
     });
   }

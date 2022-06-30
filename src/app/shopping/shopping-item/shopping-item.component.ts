@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IIngridient } from 'src/app/shared/ingridient';
-import { createThis } from 'typescript';
+import { IIngridient } from 'src/app/shared/types/ingridient';
 import { ShoppingService } from '../shopping.service';
 
 @Component({

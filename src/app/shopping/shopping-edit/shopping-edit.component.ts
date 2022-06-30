@@ -1,6 +1,6 @@
 import { Component, OnInit,  ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { IIngridient } from 'src/app/shared/ingridient';
+import { IIngridient } from 'src/app/shared/types/ingridient';
 import { ShoppingService } from '../shopping.service';
 
 @Component({

@@ -6,7 +6,7 @@ import {
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { ApiService } from './api.service';
-import { IRecipe } from './shared/recipe';
+import { IRecipe } from './shared/types/recipe';
 
 @Injectable({
   providedIn: 'root'

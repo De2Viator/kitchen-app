@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, tap } from 'rxjs';
 import { ApiService } from '../api.service';
-import { IIngridient } from '../shared/ingridient';
-import { IRecipe } from '../shared/recipe';
+import { IIngridient } from '../shared/types/ingridient';
+import { IRecipe } from '../shared/types/recipe';
 import { ShoppingService } from '../shopping/shopping.service';
 
 @Injectable()

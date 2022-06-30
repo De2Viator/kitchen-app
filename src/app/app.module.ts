@@ -1,13 +1,12 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core.module';
 import { HeaderModule } from './header/header.module';
-import { RecipeModule } from './recipe/recipe.module';
 import { ShoppingModule } from './shopping/shopping.module';
 
 const appRoutes:Routes = [
@@ -26,7 +25,7 @@ const appRoutes:Routes = [
     NgbModule,
     ShoppingModule,
     HeaderModule,
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules}),
     RouterModule,
     AuthModule,
     BrowserModule,

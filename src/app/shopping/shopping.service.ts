@@ -2,7 +2,7 @@
 import { Injectable } from "@angular/core";
 import { Subject, tap } from "rxjs";
 import { ApiService } from "../api.service";
-import { IIngridient } from "../shared/ingridient";
+import { IIngridient } from "../shared/types/ingridient";
 @Injectable()
 export class ShoppingService {
   constructor(private api:ApiService){}

@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
-import { IAuthRequest, IAuthResponse } from '../shared/auth';
-import { Errors } from '../shared/errors';
-import { User } from '../shared/user';
+import { IAuthRequest, IAuthResponse } from '../shared/types/auth';
+import { Errors } from '../shared/types/errors';
+import { User } from '../shared/types/user';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { Component, Input} from '@angular/core';
-import { IRecipe } from 'src/app/shared/recipe';
+import { IRecipe } from 'src/app/shared/types/recipe';
 
 @Component({
   selector: 'app-recipe-item',
