@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { IAuthRequest, IAuthResponse } from '../shared/types/auth';
 import { Errors } from '../shared/types/errors';
 import { User } from '../shared/types/user';
@@ -15,13 +16,10 @@ export class AuthService {
   isAuth = false;
   timer:any;
 
-  KEY = 'AIzaSyDHXgi-XUi1AdZw_lKV6lYzO1Az5AQEMJw'
-  signUpKey = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.KEY}`;
-  logInKey = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.KEY}`
-
   signUp(signForm:IAuthRequest): Observable<IAuthResponse> {
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseKey}`;
     const body = signForm
-    return this.http.post<IAuthResponse>(this.signUpKey ,body)
+    return this.http.post<IAuthResponse>(url ,body)
     .pipe(catchError(error => {
       return this.handlerError(error, 'sign');
     }), tap(data => {
@@ -47,8 +45,9 @@ export class AuthService {
   }
 
   logIn(logForm:IAuthRequest) {
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseKey}`;
     const body = logForm;
-    return this.http.post<IAuthResponse>(this.logInKey,body)
+    return this.http.post<IAuthResponse>(url,body)
     .pipe(catchError(error => {
       return this.handlerError(error, 'login');
     }),tap(data => {
