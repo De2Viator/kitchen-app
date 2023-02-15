@@ -16,6 +16,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   })
 
   ngOnInit() :void {
+    console.log('init')
     this.recipes = this.recipeService.getRecipes();
   }
 

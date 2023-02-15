@@ -7,12 +7,9 @@ import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core.module';
 import { HeaderModule } from './header/header.module';
-import { ShoppingModule } from './shopping/shopping.module';
 
 const appRoutes:Routes = [
-  {path:'', redirectTo:'recipes-list', pathMatch:'full'},
-  {path:'recipes-list', loadChildren: () => import('./recipe/recipe.module').then(m => m.RecipeModule)},
-  {path:'shopping-list', loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule)},
+  {path:'', loadChildren: () => import('./layout/modules/layout-routing.module').then(m => m.LayoutRoutingModule)},
 ]
 
 @NgModule({
@@ -20,14 +17,8 @@ const appRoutes:Routes = [
     AppComponent,
   ],
   imports: [
-    CoreModule,
     HttpClientModule,
-    NgbModule,
-    ShoppingModule,
-    HeaderModule,
-    RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules}),
-    RouterModule,
-    AuthModule,
+    RouterModule.forRoot(appRoutes),
     BrowserModule,
   ],
   bootstrap: [AppComponent]
