@@ -1,12 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core.module';
-import { HeaderModule } from './header/header.module';
+import { HeaderModule } from './header/modules/header.module';
+import { LayoutModule } from './layout/modules/layout.module';
 
 const appRoutes:Routes = [
   {path:'', loadChildren: () => import('./layout/modules/layout-routing.module').then(m => m.LayoutRoutingModule)},
@@ -20,6 +18,7 @@ const appRoutes:Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
     BrowserModule,
+    LayoutModule
   ],
   bootstrap: [AppComponent]
 })
