@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-//import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-alert',
@@ -40,7 +40,7 @@ import { Component, Input } from '@angular/core';
     text-align: center;
 }`],
 standalone:true,
-//imports:[BrowserModule]
+imports:[BrowserModule]
 })
 export class AlertComponent {
   @Input() message:string|null = null;
