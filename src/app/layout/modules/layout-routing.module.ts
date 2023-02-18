@@ -4,7 +4,7 @@ import { LayoutComponent } from '../components/layout.component';
 
 const routes: Routes = [
   {path:'', component:LayoutComponent ,children:[
-    {path:'recipes-list', loadChildren: () => import('../../recipe/recipe.module').then(m => m.RecipeModule)}
+    {path:'recipes', loadChildren: () => import('../../recipes/modules/recipes.module').then(m => m.RecipesModule)}
   ]}
 ];
 

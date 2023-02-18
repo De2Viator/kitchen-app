@@ -1,0 +1,14 @@
+<a [routerLink]="recipe.id"class="d-flex flex-column list-group-item list-group-item-action">
+  <div class="d-flex flex-row">
+    <div class="recipe__image-containter">
+      <img class="recipe-image" [src]="recipe.image" [alt]="recipe.name">
+    </div>
+    <div class="w-100 flex-column justify-content-between">
+      <div class="d-flex justify-content-between">
+        <h5 class="mb-1">{{ recipe.name }}</h5>
+        <small class="text-muted">{{ recipe.date }}</small>
+      </div>
+      <p class="mb-1">{{ recipe.description | slicer: 150}}</p>
+    </div>
+  </div>
+</a>
