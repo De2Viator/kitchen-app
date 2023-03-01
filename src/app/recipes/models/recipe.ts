@@ -1,12 +1,23 @@
 export interface Recipe {
-    description: string; 
+    description: string;
     id: string;
-    image: string; 
-    ingridients: Ingridient
+    image: string;
+    ingredients: Ingredient[]
     name:string;
     date: string;
 }
 
-export interface Ingridient {
+export interface UploadedRecipe {
+  image: File;
+  name: string;
+  description: string;
+  ingredients: Ingredient[];
+  date: string;
 
+}
+
+
+export interface Ingredient {
+  name: string;
+  amount: number;
 }

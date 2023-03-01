@@ -1,3 +1,15 @@
-<div class="list-group">
-  <app-recipe-item class="col-12 col-md-6" [recipe]="recipe" *ngFor="let recipe of recipes"></app-recipe-item>
+<div class="d-flex recipes">
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success" routerLink="upload">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
+    <ul class="list-group">
+      <app-recipe-item  [recipe]="recipe" *ngFor="let recipe of recipeService.recipes"></app-recipe-item>
+    </ul>
+  </div>
+  <div class="col-12 col-md-6 col-lg-8">
+    <router-outlet></router-outlet>
+  </div>
 </div>

@@ -1,22 +1,16 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { catchError, Observable, Subject, tap, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { IAuthRequest, IAuthResponse } from '../shared/types/auth';
-import { Errors } from '../shared/types/errors';
+import { Subject, } from 'rxjs';
 import { User } from '../shared/types/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http:HttpClient, private router:Router){}
+  constructor(){}
   user = new Subject<User|null>();
   isAuth = false;
-  timer:any;
 
-  signUp(signForm:IAuthRequest): Observable<IAuthResponse> {
+  /*signUp(signForm:IAuthRequest): Observable<IAuthResponse> {
     const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseKey}`;
     const body = signForm
     return this.http.post<IAuthResponse>(url ,body)
@@ -96,7 +90,7 @@ export class AuthService {
           err = 'Many attempts in last time'
           break;
       }
-    } 
+    }
     else if(state === 'login') {
       switch (errMes) {
         case Errors.invalidPassword:
@@ -108,8 +102,8 @@ export class AuthService {
         case Errors.userDisabled:
           err = 'You was disabled by Administrator'
           break;
-      } 
+      }
     }
     return throwError(() => err)
-  }
+  }*/
 }

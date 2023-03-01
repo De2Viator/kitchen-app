@@ -1,33 +1,50 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Type } from '@angular/core';
-import { exhaustMap, map, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { AuthService } from './auth/auth.service';
-import { IIngridient } from './shared/types/ingridient';
-import { IRecipe } from './shared/types/recipe';
 import { environment } from '../environments/environment';
-import { Recipe } from './recipes/models/recipe';
+import {Recipe, UploadedRecipe} from './recipes/models/recipe';
+import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
+import {AngularFireStorage} from "@angular/fire/compat/storage";
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
   token:string|null|undefined = null;
-
-  constructor(private http:HttpClient, private auth:AuthService) { }
+  basePath = '/uploads';
+  constructor(private http:HttpClient, private auth:AuthService, private fdb: AngularFireDatabase,
+              private fst: AngularFireStorage) { }
 
   getRecipes(){
-    return this.http.get<{[key: string]: Recipe}>(`${environment.dbPath}/recipes.json`)
+    return this.http.get<{[key: string]: Omit<Recipe, 'id'>}>(`${environment.firebase.databaseURL}/recipes.json`)
   }
-  
 
-  changeRecipe(recipe:IRecipe): Observable<Object>  {
+  getRecipe(id: string){
+    return this.http.get<Omit<Recipe, 'id'>>(`${environment.firebase.databaseURL}/recipes/${id}.json`)
+  }
+  addRecipeImage(image: File) {
+    const filePath = `${this.basePath}/${image.name}`;
+    const uploadTask = this.fst.upload(filePath, image, {
+      contentType:image.type
+    });
+
+    return  uploadTask.snapshotChanges()
+  }
+
+  async addRecipeInfo(recipe: UploadedRecipe, image: string) {
+    const ref:AngularFireList<Omit<Recipe,'id'>> = this.fdb.list('recipes');
+    await ref.push({...recipe, image});
+    return ref.valueChanges(['child_added'], {
+      idField: 'id'
+    })
+  }
+
+
+
+  /*changeRecipe(recipe:IRecipe): Observable<Object>  {
     const body = recipe;
     return this.http.put<{[key:string]:string}>(`${environment.dbPath}/recipes/${recipe.id}.json?auth=${this.token}`,body);
-  }
-
-  addRecipe(recipe:IRecipe): Observable<Object>  {
-    const body = recipe;
-    return this.http.post<{[key:string]:string}>(`${environment.dbPath}/recipes.json?auth=${this.token}`,body);
   }
 
   deleteRecipe(id:string): Observable<Object>  {
@@ -57,7 +74,7 @@ export class ApiService {
             this.token = null;
           } else {
             this.token = user?.token;
-          } 
+          }
           return this.http.get<{ [key:string]:T }>(url)
         }),
         map(data => {
@@ -86,5 +103,5 @@ export class ApiService {
 
   deleteIngridient(id:string) {
     return this.http.delete<{[key:string]:string}>(`${environment.dbPath}/ingridients/${id}.json?auth=${this.token}`);
-  }
+  }*/
 }

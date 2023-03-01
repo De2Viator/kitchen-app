@@ -3,8 +3,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { HeaderModule } from './header/modules/header.module';
 import { LayoutModule } from './layout/modules/layout.module';
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
+import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import {environment} from "../environments/environment";
 
 const appRoutes:Routes = [
   {path:'', loadChildren: () => import('./layout/modules/layout-routing.module').then(m => m.LayoutRoutingModule)},
@@ -18,7 +21,10 @@ const appRoutes:Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
     BrowserModule,
-    LayoutModule
+    LayoutModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
+    AngularFireStorageModule,
   ],
   bootstrap: [AppComponent]
 })
