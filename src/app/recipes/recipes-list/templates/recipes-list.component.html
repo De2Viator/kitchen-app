@@ -5,9 +5,10 @@
         <i class="bi bi-plus-lg"></i>
       </button>
     </div>
-    <ul class="list-group">
+    <ul *ngIf="recipeService.recipes.length" class="list-group">
       <app-recipe-item  [recipe]="recipe" *ngFor="let recipe of recipeService.recipes"></app-recipe-item>
     </ul>
+    <h4 *ngIf="!recipeService.recipes.length">You haven't any recipe, add new !</h4>
   </div>
   <div class="col-12 col-md-6 col-lg-8">
     <router-outlet></router-outlet>

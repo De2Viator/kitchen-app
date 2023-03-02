@@ -33,7 +33,7 @@ export class RecipeUploadComponent {
         nonNullable: true
       }),
       amount: new FormControl(0, {
-        validators:[Validators.min(1), Validators.nullValidator],
+        validators:[Validators.required, Validators.nullValidator],
         nonNullable: true
       })
     })
