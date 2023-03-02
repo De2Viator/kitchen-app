@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {RecipesService} from "../../services/recipes.service";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import { Ingredient, UploadedRecipe} from "../../models/recipe";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -10,7 +11,7 @@ import { Ingredient, UploadedRecipe} from "../../models/recipe";
   styleUrls: ['../styles/recipe-upload.component.scss']
 })
 export class RecipeUploadComponent {
-  constructor(private readonly recipeService: RecipesService) {
+  constructor(private readonly recipeService: RecipesService, private readonly router: Router) {
   }
   addedImage = {} as File;
   image: string | null = null;
@@ -61,7 +62,9 @@ export class RecipeUploadComponent {
         date: new Date().toISOString(),
         ingredients: this.ingredients.value as Ingredient[]
       }
-      this.recipeService.addRecipe(recipe);
+      this.recipeService.addRecipe(recipe).subscribe(data => {
+        this.router.navigate([`/recipes/${data.id}`])
+      });
     } else {
       throw new Error('Some data is wrong')
     }

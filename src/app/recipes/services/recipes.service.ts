@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {finalize, map} from 'rxjs';
+import {finalize, map, Observable} from 'rxjs';
 import { ApiService } from '../../api.service';
 import {Recipe, UploadedRecipe} from '../models/recipe';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
@@ -33,17 +33,19 @@ export class RecipesService {
   addRecipe(recipe: UploadedRecipe) {
     const response = this.apiService.addRecipeImage(recipe.image);
     const storageRef = this.fst.ref(`${this.apiService.basePath}/${recipe.image.name}`);
-    return response.pipe(
-      finalize(() => {
-        storageRef.getDownloadURL().subscribe(async downloadURL => {
-          (await this.apiService.addRecipeInfo(recipe, downloadURL)).subscribe(data => {
-            const recipe = data[data.length - 1] as Recipe;
-            if(!recipe.ingredients) recipe.ingredients = [];
-            this.recipes.push(recipe);
+    return new Observable<Recipe>((subscriber) => {
+      response.pipe(
+        finalize(() => {
+          storageRef.getDownloadURL().subscribe(async downloadURL => {
+            (await this.apiService.addRecipeInfo(recipe, downloadURL)).subscribe(data => {
+              const recipe = data[data.length - 1] as Recipe;
+              if(!recipe.ingredients) recipe.ingredients = [];
+              this.recipes.push(recipe);
+              subscriber.next(recipe)
+            });
           });
-          return downloadURL;
-        });
-      })
-    ).subscribe(() => {})
+        })
+      ).subscribe(() => {})
+    });
   }
 }
