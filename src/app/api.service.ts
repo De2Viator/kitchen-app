@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 import { environment } from '../environments/environment';
-import {Recipe, UploadedRecipe} from './recipes/models/recipe';
+import {EditedRecipe, Recipe, UploadedRecipe} from './recipes/models/recipe';
 import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 
@@ -21,7 +21,7 @@ export class ApiService {
   }
 
   getRecipe(id: string){
-    return this.http.get<Omit<Recipe, 'id'>>(`${environment.firebase.databaseURL}/recipes/${id}.json`)
+    return this.fdb.object<Omit<Recipe, 'id'>>(`recipes/${id}`).valueChanges()
   }
   addRecipeImage(image: File) {
     const filePath = `${this.basePath}/${image.name}`;
@@ -40,6 +40,21 @@ export class ApiService {
     })
   }
 
+  async updateRecipeInfo(recipe: EditedRecipe, id:string, image?: string) {
+    const ref:AngularFireList<Recipe> = this.fdb.list('recipes');
+    if(image) {
+      await ref.update(id, {...recipe, image})
+    } else {
+      await ref.update(id, {...recipe as Recipe})
+    }console.log(recipe)
+    return ref.valueChanges(['child_changed'])
+  }
+
+  async updateRecipeImage(image: File, oldImage: string) {
+    const name = oldImage.match(/%2F.*\?/)![0].slice(3, -1);
+    await this.fst.storage.ref(`${this.basePath}/${decodeURI(name)}`).delete()
+    return this.addRecipeImage(image)
+  }
 
 
   /*changeRecipe(recipe:IRecipe): Observable<Object>  {

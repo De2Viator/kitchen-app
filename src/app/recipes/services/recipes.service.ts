@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {finalize, map, Observable} from 'rxjs';
+import {BehaviorSubject, finalize, map, Observable} from 'rxjs';
 import { ApiService } from '../../api.service';
-import {Recipe, UploadedRecipe} from '../models/recipe';
+import {AddedRecipe, EditedRecipe, Recipe} from '../models/recipe';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 
 @Injectable({
@@ -9,6 +9,14 @@ import {AngularFireStorage} from "@angular/fire/compat/storage";
 })
 export class RecipesService {
   recipes: Recipe[] = []
+  recipe: BehaviorSubject<Recipe> = new BehaviorSubject<Recipe>({
+    id:'',
+    ingredients:[],
+    image:'',
+    date:new Date().toISOString(),
+    description:'',
+    name:''
+  })
   constructor(private readonly apiService: ApiService, private fst: AngularFireStorage) { }
   getRecipes() {
     return this.apiService.getRecipes().pipe(map(data => {
@@ -23,14 +31,36 @@ export class RecipesService {
   }
 
   getRecipe(id: string) {
-    return this.apiService.getRecipe(id)
+    return this.apiService.getRecipe(id).subscribe(recipe => {
+      if(recipe)  this.recipe.next({...recipe, id})
+    })
   }
 
-  updateRecipe(id: string) {
-    return this.apiService.getRecipe(id)
+  async updateRecipe(recipe: EditedRecipe) {
+    if(recipe.image instanceof File) {
+      const response = await this.apiService.updateRecipeImage(recipe.image, this.recipe.value.image)
+      const storageRef = this.fst.ref(`${this.apiService.basePath}/${recipe.image.name}`);
+      return new Observable((subscriber) => {
+        response.subscribe(() => {
+          storageRef.getDownloadURL().subscribe(async downloadURL => {
+            (await this.apiService.updateRecipeInfo(recipe,this.recipe.value.id,downloadURL))
+              .subscribe(data => {
+                console.log(data)
+              subscriber.next(data)
+            });
+            console.log(downloadURL)
+          });
+        })
+      }).subscribe()
+    } else {
+      return (await this.apiService.updateRecipeInfo(recipe,this.recipe.value.id)).pipe(map(data => {
+        console.log(data)
+        return data
+      })).subscribe()
+    }
   }
 
-  addRecipe(recipe: UploadedRecipe) {
+  addRecipe(recipe: AddedRecipe) {
     const response = this.apiService.addRecipeImage(recipe.image);
     const storageRef = this.fst.ref(`${this.apiService.basePath}/${recipe.image.name}`);
     return new Observable<Recipe>((subscriber) => {

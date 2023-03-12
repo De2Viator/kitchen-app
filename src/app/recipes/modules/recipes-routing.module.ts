@@ -7,6 +7,8 @@ const routes: Routes = [
   {path:'', component: RecipesListComponent, children:[
     {path:'upload', loadChildren:() => import('../recipe-upload/modules/recipe-upload.module')
         .then(m => m.RecipeUploadModule)},
+      {path:'edit/:id', loadChildren:() => import('../recipe-upload/modules/recipe-upload.module')
+          .then(m => m.RecipeUploadModule)},
     {path:':id', component: RecipeDetailsComponent},
   ]},
 ];

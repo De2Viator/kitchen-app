@@ -13,7 +13,7 @@
         <label for="image" class="form-label">Image</label>
         <input (change)="uploadImage($event)" accept="image/png, image/gif, image/jpeg" class="form-control" type="file" id="image">
       </fieldset>
-      <img [src]="image" class="col-12" alt="">
+      <img [src]="image" class="col-12" [alt]="recipeService.recipe.value.name">
     </div>
     <div class="col-12">
       <button type="button" class="btn btn-success" (click)="addIngredient()">
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="col-12 d-flex justify-content-end">
-      <button type="submit" class="btn btn-primary">Add</button>
+      <button type="submit" class="btn btn-primary">{{isEdit ?'Edit' :'Add'}}</button>
     </div>
   </div>
 </form>

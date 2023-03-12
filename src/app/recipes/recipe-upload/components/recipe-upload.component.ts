@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {RecipesService} from "../../services/recipes.service";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import { Ingredient, UploadedRecipe} from "../../models/recipe";
-import {Router} from "@angular/router";
+import { EditedRecipe, Ingredient, UploadedRecipe} from "../../models/recipe";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -10,29 +11,62 @@ import {Router} from "@angular/router";
   templateUrl: '../templates/recipe-upload.component.html',
   styleUrls: ['../styles/recipe-upload.component.scss']
 })
-export class RecipeUploadComponent {
-  constructor(private readonly recipeService: RecipesService, private readonly router: Router) {
+export class RecipeUploadComponent implements OnInit, OnDestroy {
+  constructor(public readonly recipeService: RecipesService, private readonly route: ActivatedRoute,
+              private readonly router: Router) {
   }
+  recipeForm:FormGroup = new FormGroup({
+    name:new FormControl(),
+    description: new FormControl()
+  });
+  isEdit: boolean = false;
   addedImage = {} as File;
-  image: string | null = null;
-  recipeForm = new FormGroup({
-    name: new FormControl('', {
-      validators:[Validators.required, Validators.nullValidator],
-      nonNullable: true,
-    }),
-    description: new FormControl('', {
-      validators:[Validators.required, Validators.nullValidator],
-      nonNullable: true,
-    }),
-  })
-  ingredients = new FormArray<FormGroup<{name: FormControl<string>, amount: FormControl<number>}>>([]);
-  addIngredient() {
+  recipeSubscription: Subscription = new Subscription();
+  image: string | ArrayBuffer |null = null;
+  ingredients = new FormArray<FormGroup<{name: FormControl<string | undefined>, amount: FormControl<number | undefined>}>>
+  ([]);
+
+  ngOnInit(): void {
+    this.route.params.subscribe(data => {
+      const {id} = data;
+      if(id) {
+        this.recipeService.getRecipe(id);
+        this.isEdit = true;
+        this.recipeSubscription = this.recipeService.recipe.subscribe((recipe) => {
+          this.image = recipe.image
+          this.initForms();
+          if(recipe.ingredients) {
+            for(const ingredient of recipe.ingredients) {
+              this.addIngredient(ingredient.name, ingredient.amount)
+            }
+          }
+        })
+      } else {
+        this.isEdit = false;
+        this.initForms()
+      }
+    })
+  }
+
+  initForms() {
+    this.recipeForm = new FormGroup({
+      name: new FormControl(this.recipeService.recipe.value.name, {
+        validators:[Validators.required, Validators.nullValidator],
+        nonNullable: true,
+      }),
+      description: new FormControl(this.recipeService.recipe.value.description, {
+        validators:[Validators.required, Validators.nullValidator],
+        nonNullable: true,
+      }),
+    })
+  }
+  addIngredient(name?:string, amount?:number) {
     const form = new FormGroup({
-      name: new FormControl('', {
+      name: new FormControl(name, {
         validators:[Validators.required, Validators.nullValidator],
         nonNullable: true
       }),
-      amount: new FormControl(0, {
+      amount: new FormControl(amount, {
         validators:[Validators.required, Validators.nullValidator],
         nonNullable: true
       })
@@ -48,25 +82,45 @@ export class RecipeUploadComponent {
     const selectedFile = el.files![0];
     const reader = new FileReader();
     this.addedImage = selectedFile;
-    reader.onload = () => {
-      //this.addedImage.image = e.target!.result as string | ArrayBuffer;
+    reader.readAsDataURL(selectedFile);
+    reader.onload = (event) => {
+      this.image = event.target!.result
     }
   }
 
   addRecipe() {
-    if(this.recipeForm.valid && this.ingredients.valid && this.addedImage.name) {
+    if(this.recipeForm.valid && this.ingredients.valid && this.image) {
       const recipe: UploadedRecipe = {
-        image: this.addedImage,
         name: this.recipeForm.value.name as string,
         description: this.recipeForm.value.description as string,
         date: new Date().toISOString(),
-        ingredients: this.ingredients.value as Ingredient[]
+        ingredients: this.ingredients.value as Ingredient[]||[],
       }
-      this.recipeService.addRecipe(recipe).subscribe(data => {
-        this.router.navigate([`/recipes/${data.id}`])
-      });
+
+      if(this.isEdit) {
+        const image = this.addedImage.name ? this.addedImage as File : this.image as string
+        const editedRecipe: EditedRecipe = {...recipe, image}
+        this.recipeService.updateRecipe(editedRecipe)
+      } else {
+        const addedRecipe = {...recipe, image: this.addedImage}
+        this.recipeService.addRecipe(addedRecipe).subscribe(data => {
+          this.router.navigate([`/recipes/${data.id}`])
+        });
+      }
     } else {
       throw new Error('Some data is wrong')
     }
+  }
+
+  ngOnDestroy() {
+    this.recipeService.recipe.next({
+      id:'',
+      ingredients:[],
+      image:'',
+      date:new Date().toISOString(),
+      description:'',
+      name:''
+    })
+    this.recipeSubscription.unsubscribe()
   }
 }

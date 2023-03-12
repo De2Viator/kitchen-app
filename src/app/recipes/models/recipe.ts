@@ -8,12 +8,18 @@ export interface Recipe {
 }
 
 export interface UploadedRecipe {
-  image: File;
   name: string;
   description: string;
   ingredients: Ingredient[];
   date: string;
 
+}
+export interface AddedRecipe extends UploadedRecipe {
+  image: File;
+}
+
+export interface EditedRecipe extends UploadedRecipe{
+  image: File|string;
 }
 
 

@@ -1,4 +1,4 @@
-import { SlicePipe } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SlicerPipe } from '../../../../shared/slicer/slicer.pipe';
@@ -9,7 +9,7 @@ import { Recipe } from '../../../models/recipe';
   templateUrl: '../templates/recipe-item.component.html',
   styleUrls: ['../styles/recipe-item.component.scss'],
   standalone: true,
-  imports:[RouterModule, SlicerPipe],
+  imports:[RouterModule, SlicerPipe, CommonModule],
 })
 export class RecipeItemComponent {
   @Input() recipe!: Recipe;
