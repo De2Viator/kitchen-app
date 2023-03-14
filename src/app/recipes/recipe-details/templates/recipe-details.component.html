@@ -1,6 +1,11 @@
 <div class="container">
   <div class="d-flex justify-content-between">
-    <button class="btn btn-info" [routerLink]="'/recipes/edit/'+recipeService.recipe.value.id">Edit</button>
+    <button class="btn btn-info" [routerLink]="'/recipes/edit/'+recipeService.recipe.value.id">
+      <i class="bi bi-pencil"></i>
+    </button>
+    <button class="btn btn-danger"  (click)="deleteRecipe()">
+      <i class="bi bi-trash3-fill"></i>
+    </button>
   </div>
   <div class="text-center">
     <h1>{{recipeService.recipe.value.name}}</h1>
@@ -11,7 +16,7 @@
     <div class="d-flex justify-content-center">
       <p class="col-10">{{recipeService.recipe.value.description}}</p>
     </div>
-    <ul class="list-group list-group-flush d-flex justify-content-between col-12">
+    <ul class="list-group justify-content-between col-12">
       <li *ngFor="let ingredient of recipeService.recipe.value.ingredients" class="list-group-item">
         {{ingredient.name}}:{{ingredient.amount}}
       </li>

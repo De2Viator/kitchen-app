@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 import { environment } from '../environments/environment';
-import {EditedRecipe, Recipe, UploadedRecipe} from './recipes/models/recipe';
+import {DeletedRecipe, EditedRecipe, Recipe, UploadedRecipe} from './recipes/models/recipe';
 import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 
@@ -32,6 +32,16 @@ export class ApiService {
     return  uploadTask.snapshotChanges()
   }
 
+  async deleteRecipeImage(image: string) {
+    const name = image.match(/%2F.*\?/)![0].slice(3, -1);
+    await this.fst.storage.ref(`${this.basePath}/${decodeURI(name)}`).delete()
+  }
+
+  async updateRecipeImage(image: File, oldImage: string) {
+    await this.deleteRecipeImage(oldImage)
+    return this.addRecipeImage(image)
+  }
+
   async addRecipeInfo(recipe: UploadedRecipe, image: string) {
     const ref:AngularFireList<Omit<Recipe,'id'>> = this.fdb.list('recipes');
     await ref.push({...recipe, image});
@@ -48,19 +58,13 @@ export class ApiService {
       idField:'id'
     })
   }
-
-  async updateRecipeImage(image: File, oldImage: string) {
-    const name = oldImage.match(/%2F.*\?/)![0].slice(3, -1);
-    await this.fst.storage.ref(`${this.basePath}/${decodeURI(name)}`).delete()
-    return this.addRecipeImage(image)
+  async deleteRecipe(info: DeletedRecipe) {
+    await this.fdb.list('recipes').remove(info.id);
+    await this.deleteRecipeImage(info.image)
   }
 
 
   /*
-
-  deleteRecipe(id:string): Observable<Object>  {
-    return this.http.delete<{[key:string]:string}>(`${environment.dbPath}/recipes/${id}.json?auth=${this.token}`);
-  }
 
   addIngridient(ingridient:IIngridient) {
     const body = ingridient;

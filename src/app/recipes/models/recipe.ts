@@ -22,6 +22,11 @@ export interface EditedRecipe extends UploadedRecipe{
   image: File|string;
 }
 
+export interface DeletedRecipe {
+  id: string;
+  image: string;
+}
+
 
 export interface Ingredient {
   name: string;
