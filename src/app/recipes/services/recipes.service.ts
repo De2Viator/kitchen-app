@@ -32,7 +32,7 @@ export class RecipesService {
 
   getRecipe(id: string) {
     return this.apiService.getRecipe(id).subscribe(recipe => {
-      if(recipe)  this.recipe.next({...recipe, id})
+      if(recipe) this.recipe.next({...recipe, id})
     })
   }
 
@@ -45,16 +45,15 @@ export class RecipesService {
           storageRef.getDownloadURL().subscribe(async downloadURL => {
             (await this.apiService.updateRecipeInfo(recipe,this.recipe.value.id,downloadURL))
               .subscribe(data => {
-                console.log(data)
-              subscriber.next(data)
+                this.recipes = [...data]
+              subscriber.next(recipe)
             });
-            console.log(downloadURL)
           });
         })
       }).subscribe()
     } else {
       return (await this.apiService.updateRecipeInfo(recipe,this.recipe.value.id)).pipe(map(data => {
-        console.log(data)
+        this.recipes = [...data]
         return data
       })).subscribe()
     }

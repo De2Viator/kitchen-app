@@ -42,12 +42,11 @@ export class ApiService {
 
   async updateRecipeInfo(recipe: EditedRecipe, id:string, image?: string) {
     const ref:AngularFireList<Recipe> = this.fdb.list('recipes');
-    if(image) {
-      await ref.update(id, {...recipe, image})
-    } else {
-      await ref.update(id, {...recipe as Recipe})
-    }console.log(recipe)
-    return ref.valueChanges(['child_changed'])
+    if(image) await ref.update(id, {...recipe, image})
+    else await ref.update(id, {...recipe as Recipe})
+    return ref.valueChanges(['child_changed'], {
+      idField:'id'
+    })
   }
 
   async updateRecipeImage(image: File, oldImage: string) {
@@ -57,10 +56,7 @@ export class ApiService {
   }
 
 
-  /*changeRecipe(recipe:IRecipe): Observable<Object>  {
-    const body = recipe;
-    return this.http.put<{[key:string]:string}>(`${environment.dbPath}/recipes/${recipe.id}.json?auth=${this.token}`,body);
-  }
+  /*
 
   deleteRecipe(id:string): Observable<Object>  {
     return this.http.delete<{[key:string]:string}>(`${environment.dbPath}/recipes/${id}.json?auth=${this.token}`);
@@ -81,40 +77,6 @@ export class ApiService {
     return this.getArrays<IIngridient>(`${environment.dbPath}/ingridients.json?auth=${this.token}`)
   }
 
-  getArrays<T>(url:string) {
-    if(this.token === null) {
-      return this.auth.user.pipe(
-        exhaustMap(user => {
-          if(user === null) {
-            this.token = null;
-          } else {
-            this.token = user?.token;
-          }
-          return this.http.get<{ [key:string]:T }>(url)
-        }),
-        map(data => {
-          console.log()
-          let dataArr = [];
-          for(const key in data) {
-            if(data[key]){
-              dataArr.push({...data[key], id:key})
-            }
-          }
-          return dataArr
-        }));
-    } else {
-      return this.http.get<{ [key:string]:T }>(url)
-      .pipe(map(data => {
-        let dataArr = [];
-        for(const key in data) {
-          if(data[key]){
-            dataArr.push({...data[key], id:key})
-          }
-        }
-        return dataArr
-      }));
-    }
-  }
 
   deleteIngridient(id:string) {
     return this.http.delete<{[key:string]:string}>(`${environment.dbPath}/ingridients/${id}.json?auth=${this.token}`);

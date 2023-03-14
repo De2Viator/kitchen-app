@@ -36,6 +36,7 @@ export class RecipeUploadComponent implements OnInit, OnDestroy {
           this.image = recipe.image
           this.initForms();
           if(recipe.ingredients) {
+            this.ingredients.clear();
             for(const ingredient of recipe.ingredients) {
               this.addIngredient(ingredient.name, ingredient.amount)
             }

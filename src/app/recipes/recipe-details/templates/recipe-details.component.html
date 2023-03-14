@@ -11,8 +11,8 @@
     <div class="d-flex justify-content-center">
       <p class="col-10">{{recipeService.recipe.value.description}}</p>
     </div>
-    <ul class="list-group d-flex flex-row justify-content-between col-12">
-      <li *ngFor="let ingredient of recipeService.recipe.value.ingredients" class="col-5 list-group-item">
+    <ul class="list-group list-group-flush d-flex justify-content-between col-12">
+      <li *ngFor="let ingredient of recipeService.recipe.value.ingredients" class="list-group-item">
         {{ingredient.name}}:{{ingredient.amount}}
       </li>
     </ul>
