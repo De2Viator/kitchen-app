@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 import { environment } from '../environments/environment';
-import {DeletedRecipe, EditedRecipe, Recipe, UploadedRecipe} from './recipes/models/recipe';
+import {DeletedRecipe, EditedRecipe, Ingredient, Recipe, UploadedRecipe} from './recipes/models/recipe';
 import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
+import {ShoppedIngredient} from "./shopping/models/shopped";
 
 @Injectable({
   providedIn: 'root'
@@ -63,26 +64,28 @@ export class ApiService {
     await this.deleteRecipeImage(info.image)
   }
 
-
-  /*
-
-  addIngridient(ingridient:IIngridient) {
-    const body = ingridient;
-    return this.http.post<{ [key:string]:string }>(`${environment.dbPath}/ingridients.json?auth=${this.token}`,body)
+  getIngredients() {
+    return this.http.get<{[key: string]: Omit<Ingredient, 'id'>}>(`${environment.firebase.databaseURL}/ingredients.json`)
   }
 
-  changeIngridient(ingridient:IIngridient): Observable<Object>  {
-    const body = ingridient;
-    return this.http.put<{ [key:string]:string }>
-    (`${environment.dbPath}/ingridients/${ingridient.id}.json?auth=${this.token}`,body);
+  async addIngredient(ingredient:Omit<Ingredient,'id'>) {
+    const ref:AngularFireList<Omit<Ingredient,'id'>> = this.fdb.list('ingredients');
+    await ref.push({...ingredient});
+    return ref.valueChanges(['child_added'], {
+      idField: 'id'
+    })
   }
 
-  getIngridients() {
-    return this.getArrays<IIngridient>(`${environment.dbPath}/ingridients.json?auth=${this.token}`)
+  async updateIngredient(ingredient: ShoppedIngredient) {
+    const {id, name, amount} = ingredient;
+    const ref:AngularFireList<ShoppedIngredient> = this.fdb.list('ingredients');
+    await ref.update(id, {name, amount})
+    return ref.valueChanges(['child_changed'], {
+      idField:'id'
+    })
   }
 
-
-  deleteIngridient(id:string) {
-    return this.http.delete<{[key:string]:string}>(`${environment.dbPath}/ingridients/${id}.json?auth=${this.token}`);
-  }*/
+  async deleteIngredient(id: string) {
+    await this.fdb.list('ingredients').remove(id);
+  }
 }

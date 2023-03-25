@@ -82,13 +82,5 @@ export class RecipesService {
       image: this.recipe.value.image
     });
     this.recipes.splice(this.recipes.findIndex(recipe => recipe.id === this.recipe.value.id), 1);
-    //this.recipe.next({
-    //  id:'',
-    //  ingredients:[],
-    //  image:'',
-    //  date:new Date().toISOString(),
-    //  description:'',
-    //  name:''
-    //})
   }
 }
