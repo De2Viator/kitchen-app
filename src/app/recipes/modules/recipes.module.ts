@@ -5,9 +5,11 @@ import { RecipesService } from '../services/recipes.service';
 import { RecipesListModule } from '../recipes-list/modules/recipes-list.module';
 import { RecipeDetailsModule } from '../recipe-details/modules/recipe-details.module';
 import {RecipeUploadModule} from "../recipe-upload/modules/recipe-upload.module";
+import {RecipesComponent} from "../components/recipes.component";
 
 
 @NgModule({
+  declarations:[RecipesComponent],
   imports: [
     CommonModule,
     RecipesRoutingModule,

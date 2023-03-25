@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './auth/services/auth.service';
 import { environment } from '../environments/environment';
 import {DeletedRecipe, EditedRecipe, Ingredient, Recipe, UploadedRecipe} from './recipes/models/recipe';
 import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
