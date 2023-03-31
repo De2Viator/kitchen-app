@@ -9,8 +9,8 @@ import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {environment} from "../environments/environment";
 
 const appRoutes:Routes = [
-  {path:'', loadChildren: () => import('./layout/modules/layout.module').then(m => m.LayoutModule)},
   {path:'auth', loadChildren: () => import('./auth/modules/auth.module').then(m => m.AuthModule)},
+  {path:'', loadChildren: () => import('./layout/modules/layout.module').then(m => m.LayoutModule)},
 ]
 
 @NgModule({

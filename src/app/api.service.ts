@@ -1,21 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth/services/auth.service';
 import { environment } from '../environments/environment';
 import {DeletedRecipe, EditedRecipe, Ingredient, Recipe, UploadedRecipe} from './recipes/models/recipe';
 import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {ShoppedIngredient} from "./shopping/models/shopped";
+import {SignUser} from "./auth/models/user";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ApiService {
-  token:string|null|undefined = null;
   basePath = '/uploads';
-  constructor(private http:HttpClient, private auth:AuthService, private fdb: AngularFireDatabase,
-              private fst: AngularFireStorage) { }
+  constructor(private http:HttpClient, private fdb: AngularFireDatabase, private fst: AngularFireStorage,
+              private fAuth: AngularFireAuth) { }
 
   getRecipes(){
     return this.http.get<{[key: string]: Omit<Recipe, 'id'>}>(`${environment.firebase.databaseURL}/recipes.json`)
@@ -87,5 +87,17 @@ export class ApiService {
 
   async deleteIngredient(id: string) {
     await this.fdb.list('ingredients').remove(id);
+  }
+
+  async signUp(user: SignUser) {
+    const {email, password} = user;
+    const createdUser = await this.fAuth.createUserWithEmailAndPassword(email, password);
+    await createdUser.user?.sendEmailVerification();
+    return createdUser;
+  }
+
+  async signIn(user: SignUser) {
+    const {email, password} = user;
+    return await this.fAuth.signInWithEmailAndPassword(email, password);
   }
 }

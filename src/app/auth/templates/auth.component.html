@@ -1,1 +1,25 @@
-<p>auth works!</p>
+<div class="auth vh-100 align-items-center">
+  <form class="col-12 h-100" [formGroup]="authForm">
+    <div class="d-flex justify-content-center align-items-center flex-wrap h-100">
+      <div class="col-11 col-sm-8 col-lg-6 col-xl-4 sign">
+        <fieldset>
+          <label for="email" class="col-sm-2 col-form-label">Email:</label>
+          <input type="text" id="email" formControlName="email" class="form-control col-12">
+        </fieldset>
+        <fieldset>
+          <label for="password" class="col-sm-2 col-form-label">Password:</label>
+          <input type="password" id="password" formControlName="password" class="form-control col-12">
+        </fieldset>
+        <div class="d-flex justify-content-end mt-4">
+          <button class="btn btn-primary justify-self-end me-4" type="submit" (click)="isRegister = !isRegister">Change</button>
+          <button class="btn btn-info justify-self-end" type="submit" (click)="sign()">
+            Sign {{isRegister ? 'Up' : 'In'}}
+          </button>
+        </div>
+        <div *ngIf="error" class="mt-2" [appAlert]="alertType">
+          {{error}}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
