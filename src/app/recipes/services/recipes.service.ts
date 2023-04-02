@@ -3,6 +3,7 @@ import {BehaviorSubject, finalize, map, Observable} from 'rxjs';
 import { ApiService } from '../../api.service';
 import {AddedRecipe, EditedRecipe, Recipe} from '../models/recipe';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class RecipesService {
     description:'',
     name:''
   })
-  constructor(private readonly apiService: ApiService, private fst: AngularFireStorage) { }
+  constructor(private readonly apiService: ApiService, private fst: AngularFireStorage, private router: Router) { }
   getRecipes() {
     return this.apiService.getRecipes().pipe(map(data => {
       const results = []
@@ -31,7 +32,10 @@ export class RecipesService {
   }
 
   getRecipe(id: string) {
-    return this.apiService.getRecipe(id)
+    return this.apiService.getRecipe(id).subscribe(recipe => {
+      if(recipe) this.recipe.next({...recipe, id})
+      else this.router.navigate(['/recipes'])
+    })
   }
 
   async updateRecipe(recipe: EditedRecipe) {

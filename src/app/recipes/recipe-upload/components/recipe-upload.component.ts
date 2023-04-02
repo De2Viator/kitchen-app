@@ -89,7 +89,7 @@ export class RecipeUploadComponent implements OnInit, OnDestroy {
     }
   }
 
-  addRecipe() {
+  async addRecipe() {
     if(this.recipeForm.valid && this.ingredients.valid && this.image) {
       const recipe: UploadedRecipe = {
         name: this.recipeForm.value.name as string,
@@ -104,7 +104,8 @@ export class RecipeUploadComponent implements OnInit, OnDestroy {
         this.recipeService.updateRecipe(editedRecipe)
       } else {
         const addedRecipe = {...recipe, image: this.addedImage}
-        this.recipeService.addRecipe(addedRecipe).subscribe(data => {
+        const response = await this.recipeService.addRecipe(addedRecipe)
+        response.subscribe(data => {
           this.router.navigate([`/recipes/${data.id}`])
         });
       }

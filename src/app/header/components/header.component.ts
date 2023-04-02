@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['../styles/header.component.scss']
 })
 export class HeaderComponent {
-  items:string[] = ['Recipes','Shopping','Profile']
+  items:string[] = ['Recipes','Shopping']
 }

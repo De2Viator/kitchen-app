@@ -16,12 +16,7 @@ export class RecipeDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((data) => {
       const {id} = data;
-      if (id) {
-        this.recipeService.getRecipe(id).subscribe(recipe => {
-          if(recipe) this.recipeService.recipe.next({...recipe, id})
-          else this.router.navigate(['/recipes'])
-        })
-      }
+      if (id) this.recipeService.getRecipe(id)
     });
   }
 
