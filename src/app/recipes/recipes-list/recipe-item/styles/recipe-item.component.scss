@@ -1,0 +1,12 @@
+.recipe-image{
+ max-width: 150px;
+ height: 100%;
+ object-fit: cover;
+}
+
+
+@media(max-width:350px) {
+  .recipe-header {
+    flex-wrap: wrap;
+  }
+}

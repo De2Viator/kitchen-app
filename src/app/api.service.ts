@@ -1,89 +1,114 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Type } from '@angular/core';
-import { exhaustMap, map, Observable, take } from 'rxjs';
-import { AuthService } from './auth/auth.service';
-import { IIngridient } from './shared/types/ingridient';
-import { IRecipe } from './shared/types/recipe';
+import {Injectable} from '@angular/core';
+import { environment } from '../environments/environment';
+import {DeletedRecipe, EditedRecipe, Ingredient, Recipe, UploadedRecipe} from './recipes/models/recipe';
+import {AngularFireDatabase, AngularFireList} from "@angular/fire/compat/database";
+import {AngularFireStorage, AngularFireUploadTask} from "@angular/fire/compat/storage";
+import {ShoppedIngredient} from "./shopping/models/shopped";
+import {SignUser} from "./auth/models/user";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
+import {InfoService} from "./shared/services/info.service";
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
-  API='https://kitchen-app-1f837-default-rtdb.firebaseio.com';
-  token:string|null|undefined = null;
-
-  constructor(private http:HttpClient, private auth:AuthService) { }
-
+  constructor(private http:HttpClient, private fdb: AngularFireDatabase, private fst: AngularFireStorage,
+              private fAuth: AngularFireAuth, private readonly infoService: InfoService) {}
+  uid = this.infoService.user.value?.id;
+  basePath = `${this.uid}`;
   getRecipes(){
-    return this.getArrays<IRecipe>(`${this.API}/recipes.json?auth=${this.token}`) 
-  }
-  
-
-  changeRecipe(recipe:IRecipe): Observable<Object>  {
-    const body = recipe;
-    return this.http.put<{[key:string]:string}>(`${this.API}/recipes/${recipe.id}.json?auth=${this.token}`,body);
+    return this.http.get<{[key: string]: Omit<Recipe, 'id'>}>
+    (`${environment.firebase.databaseURL}/recipes/${this.uid}.json`)
   }
 
-  addRecipe(recipe:IRecipe): Observable<Object>  {
-    const body = recipe;
-    return this.http.post<{[key:string]:string}>(`${this.API}/recipes.json?auth=${this.token}`,body);
+  getRecipe(id: string){
+    return this.fdb.object<Omit<Recipe, 'id'>>(`recipes/${this.uid}/${id}`).valueChanges()
+  }
+  addRecipeImage(image: File) {
+
+    const filePath = `${this.basePath}/${image.name}`;
+    const uploadTask: AngularFireUploadTask = this.fst.upload(filePath,image, {
+      contentType:image.type,
+    })
+
+    return uploadTask.snapshotChanges();
   }
 
-  deleteRecipe(id:string): Observable<Object>  {
-    return this.http.delete<{[key:string]:string}>(`${this.API}/recipes/${id}.json?auth=${this.token}`);
+  async deleteRecipeImage(image: string) {
+    const name = image.match(/%2F.*\?/)![0].slice(3, -1);
+    await this.fst.storage.ref(`${this.basePath}/${decodeURI(name)}`).delete()
   }
 
-  addIngridient(ingridient:IIngridient) {
-    const body = ingridient;
-    return this.http.post<{ [key:string]:string }>(`${this.API}/ingridients.json?auth=${this.token}`,body)
+  async updateRecipeImage(image: File, oldImage: string) {
+    await this.deleteRecipeImage(oldImage)
+    return this.addRecipeImage(image)
   }
 
-  changeIngridient(ingridient:IIngridient): Observable<Object>  {
-    const body = ingridient;
-    return this.http.put<{ [key:string]:string }>
-    (`${this.API}/ingridients/${ingridient.id}.json?auth=${this.token}`,body);
+  async addRecipeInfo(recipe: UploadedRecipe, image: string) {
+    const ref:AngularFireList<Omit<Recipe,'id'>> = this.fdb.list(`recipes/${this.uid}`);
+    await ref.push({...recipe, image});
+    return ref.valueChanges(['child_added'], {
+      idField: 'id'
+    })
   }
 
-  getIngridients() {
-    return this.getArrays<IIngridient>(`${this.API}/ingridients.json?auth=${this.token}`)
+  async updateRecipeInfo(recipe: EditedRecipe, id:string, image?: string) {
+    const ref:AngularFireList<Recipe> = this.fdb.list(`recipes/${this.uid}`);
+    if(image) await ref.update(id, {...recipe, image})
+    else await ref.update(id, {...recipe as Recipe})
+    return ref.valueChanges(['child_changed'], {
+      idField:'id'
+    })
+  }
+  async deleteRecipe(info: DeletedRecipe) {
+    await this.fdb.list(`recipes/${this.uid}`).remove(info.id);
+    await this.deleteRecipeImage(info.image)
   }
 
-  getArrays<T>(url:string) {
-    if(this.token === null) {
-      return this.auth.user.pipe(
-        exhaustMap(user => {
-          if(user === null) {
-            this.token = null;
-          } else {
-            this.token = user?.token;
-          } 
-          return this.http.get<{ [key:string]:T }>(url)
-        }),
-        map(data => {
-          console.log()
-          let dataArr = [];
-          for(const key in data) {
-            if(data[key]){
-              dataArr.push({...data[key], id:key})
-            }
-          }
-          return dataArr
-        }));
-    } else {
-      return this.http.get<{ [key:string]:T }>(url)
-      .pipe(map(data => {
-        let dataArr = [];
-        for(const key in data) {
-          if(data[key]){
-            dataArr.push({...data[key], id:key})
-          }
-        }
-        return dataArr
-      }));
-    }
+  getIngredients() {
+    return this.http.get<{[key: string]: Omit<Ingredient, 'id'>}>
+    (`${environment.firebase.databaseURL}/ingredients/${this.uid}.json`)
   }
 
-  deleteIngridient(id:string) {
-    return this.http.delete<{[key:string]:string}>(`${this.API}/ingridients/${id}.json?auth=${this.token}`);
+  async addIngredient(ingredient:Ingredient) {
+    const ref:AngularFireList<Omit<Ingredient,'id'>> = this.fdb.list(`ingredients/${this.uid}`);
+    await ref.push({...ingredient});
+    return ref.valueChanges(['child_added'], {
+      idField: 'id'
+    })
+  }
+
+  async updateIngredient(ingredient: ShoppedIngredient) {
+    const {id, name, amount} = ingredient;
+    const ref:AngularFireList<ShoppedIngredient> = this.fdb.list(`ingredients/${this.uid}`);
+    await ref.update(id, {name, amount})
+    return ref.valueChanges(['child_changed'], {
+      idField:'id'
+    })
+  }
+
+  async deleteIngredient(id: string) {
+    await this.fdb.list(`ingredients/${this.uid}`).remove(id);
+  }
+
+  async signUp(user: SignUser) {
+    const {email, password} = user;
+    await this.fAuth.createUserWithEmailAndPassword(email, password);
+    return await this.fAuth.signInWithEmailAndPassword(email, password);
+  }
+
+  async signIn(user: SignUser) {
+    const {email, password} = user;
+    return await this.fAuth.signInWithEmailAndPassword(email, password);
+  }
+
+  async signOut() {
+    return await this.fAuth.signOut()
+  }
+
+  async changePassword(email: string) {
+    return await this.fAuth.sendPasswordResetEmail(email)
   }
 }

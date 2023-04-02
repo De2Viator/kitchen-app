@@ -1,18 +1,19 @@
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core.module';
-import { HeaderModule } from './header/header.module';
-import { ShoppingModule } from './shopping/shopping.module';
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireDatabaseModule} from "@angular/fire/compat/database";
+import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import {environment} from "../environments/environment";
+import {AuthGuard} from "./auth/guards/auth.guard";
+import {AuthInterceptor} from "./auth/interceptors/auth.interceptor";
 
 const appRoutes:Routes = [
-  {path:'', redirectTo:'recipes-list', pathMatch:'full'},
-  {path:'recipes-list', loadChildren: () => import('./recipe/recipe.module').then(m => m.RecipeModule)},
-  {path:'shopping-list', loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule)},
+  {path:'auth', loadChildren: () => import('./auth/modules/auth.module').then(m => m.AuthModule)},
+  {path:'', loadChildren: () => import('./layout/modules/layout.module').then(m => m.LayoutModule),
+    canActivate:[AuthGuard]},
 ]
 
 @NgModule({
@@ -20,16 +21,18 @@ const appRoutes:Routes = [
     AppComponent,
   ],
   imports: [
-    CoreModule,
     HttpClientModule,
-    NgbModule,
-    ShoppingModule,
-    HeaderModule,
-    RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules}),
-    RouterModule,
-    AuthModule,
+    RouterModule.forRoot(appRoutes),
     BrowserModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
+    AngularFireStorageModule,
   ],
-  bootstrap: [AppComponent]
+  providers:[  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
+  },],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
