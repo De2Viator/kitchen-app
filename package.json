@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "update": "ng update @angular/core @angular/cli",
-    "prod": "ng build"
+    "prod": "ng build",
+    "deploy": "ng build --configuration production && firebase deploy"
   },
   "private": true,
   "dependencies": {
