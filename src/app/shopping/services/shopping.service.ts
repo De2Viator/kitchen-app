@@ -24,11 +24,13 @@ export class ShoppingService {
     })).subscribe()
   }
 
-  async addIngredient() {
-    (await this.apiService.addIngredient(this.uploadedIngredient.value as Ingredient)).subscribe(data => {
+  async addIngredient(ingredient: Ingredient) {
+    (await this.apiService.addIngredient(ingredient))
+      .subscribe(data => {
       this.ingredients = data as ShoppedIngredient[]
     })
   }
+
   async updateIngredient() {
     (await this.apiService.updateIngredient(this.uploadedIngredient.value as ShoppedIngredient)).subscribe(data => {
       this.ingredients = data as ShoppedIngredient[]

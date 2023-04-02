@@ -11,7 +11,7 @@ export class RecipeDetailsComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     public readonly recipeService: RecipesService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {}
   ngOnInit(): void {
     this.route.params.subscribe((data) => {
@@ -23,6 +23,10 @@ export class RecipeDetailsComponent implements OnInit {
   async deleteRecipe() {
     await this.router.navigate(['/recipes'])
     await this.recipeService.deleteRecipe()
+  }
+
+  buyIngredients() {
+    this.recipeService.buyIngredients()
   }
 
 }

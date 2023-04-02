@@ -2,7 +2,9 @@
   <div class="col-12 col-sm-8 col-xl-6">
     <div class="d-flex col-12 justify-content-between mb-3">
       <app-shopping-upload class="col-10"></app-shopping-upload>
-      <button class="btn btn-success add-button" (click)="shoppingService.addIngredient()"><i class="bi bi-plus"></i>
+      <button class="btn btn-success add-button"
+              (click)="addIngredient()">
+        <i class="bi bi-plus"></i>
       </button>
     </div>
     <app-shopping-list></app-shopping-list>

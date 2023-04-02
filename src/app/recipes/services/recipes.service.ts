@@ -4,6 +4,7 @@ import { ApiService } from '../../api.service';
 import {AddedRecipe, EditedRecipe, Recipe} from '../models/recipe';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import {Router} from "@angular/router";
+import {ShoppingService} from "../../shopping/services/shopping.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class RecipesService {
     description:'',
     name:''
   })
-  constructor(private readonly apiService: ApiService, private fst: AngularFireStorage, private router: Router) { }
+  constructor(private readonly apiService: ApiService, private fst: AngularFireStorage, private router: Router,
+              private readonly shoppingService: ShoppingService) { }
   getRecipes() {
     return this.apiService.getRecipes().pipe(map(data => {
       const results = []
@@ -86,5 +88,11 @@ export class RecipesService {
       image: this.recipe.value.image
     });
     this.recipes.splice(this.recipes.findIndex(recipe => recipe.id === this.recipe.value.id), 1);
+  }
+
+  async buyIngredients() {
+    for(const ingredient of this.recipe.value.ingredients) {
+      await this.shoppingService.addIngredient(ingredient)
+    }
   }
 }

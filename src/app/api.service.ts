@@ -72,7 +72,7 @@ export class ApiService {
     (`${environment.firebase.databaseURL}/ingredients/${this.uid}.json`)
   }
 
-  async addIngredient(ingredient:Omit<Ingredient,'id'>) {
+  async addIngredient(ingredient:Ingredient) {
     const ref:AngularFireList<Omit<Ingredient,'id'>> = this.fdb.list(`ingredients/${this.uid}`);
     await ref.push({...ingredient});
     return ref.valueChanges(['child_added'], {
