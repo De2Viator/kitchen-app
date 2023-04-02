@@ -103,4 +103,12 @@ export class ApiService {
     const {email, password} = user;
     return await this.fAuth.signInWithEmailAndPassword(email, password);
   }
+
+  async signOut() {
+    return await this.fAuth.signOut()
+  }
+
+  async changePassword(email: string) {
+    return await this.fAuth.sendPasswordResetEmail(email)
+  }
 }

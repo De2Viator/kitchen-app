@@ -8,6 +8,6 @@ const parsedUser: User | null = JSON.parse(localStorage.getItem('user')||'null')
 })
 export class InfoService {
   user: BehaviorSubject<User|null> = new BehaviorSubject<User|null>
-  (parsedUser ? new User(parsedUser.token, parsedUser.expiredTime, parsedUser.id) : null)
+  (parsedUser ? new User(parsedUser.token, parsedUser.expiredTime, parsedUser.id, parsedUser.email) : null)
   constructor() { }
 }
