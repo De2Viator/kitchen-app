@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Ingredient} from "../../recipes/models/recipe";
 import {ApiService} from "../../api.service";
 import {ShoppedIngredient} from "../models/shopped";
-import {BehaviorSubject, map} from "rxjs";
+import {BehaviorSubject, map, tap} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +19,9 @@ export class ShoppingService {
         results.push({...data[key], id: key})
       }
       return results
-    })).subscribe(data => {
+    })).pipe(tap(data => {
       this.ingredients =[...data];
-    })
+    })).subscribe()
   }
 
   async addIngredient() {
