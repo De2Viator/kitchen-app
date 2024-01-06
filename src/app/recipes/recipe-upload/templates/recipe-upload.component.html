@@ -15,14 +15,14 @@
       </fieldset>
       <img [src]="image" class="col-12" [alt]="recipeService.recipe.value.name">
     </div>
-    <div class="col-12">
+    <div class="col-12 mt-3">
       <button type="button" class="btn btn-success" (click)="addIngredient()">
         <i class="bi bi-plus-lg"></i>
       </button>
       Ingredients:
       <div class="d-flex justify-content-between flex-wrap col-12">
         <fieldset class="d-flex justify-content-around flex-wrap border rounded p-3 mb-3 col-12 col-sm-6 col-md-7
-        col-lg-5" *ngFor="let ingredient of ingredients.controls; index as i">
+        col-lg-5 mt-3" *ngFor="let ingredient of ingredients.controls; index as i">
           <ng-container [formGroup]="ingredient">
               <div class="col-6 me-1">
                 <label for="name" class="form-label">Name:</label>
